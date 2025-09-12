@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>FCFS Scheduling</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    table, th, td { border: 1px solid black; border-collapse: collapse; padding: 8px; }
+    .gantt { display: flex; margin-top: 20px; }
+    .block { border: 1px solid black; padding: 10px; text-align: center; }
+  </style>
+</head>
+<body>
+  <h2>First Come First Serve (FCFS) Scheduling</h2>
+
+  <table id="resultTable">
+    <tr>
+      <th>Process</th>
+      <th>Arrival Time</th>
+      <th>Burst Time</th>
+      <th>Waiting Time</th>
+      <th>Turnaround Time</th>
+      <th>Completion Time</th>
+    </tr>
+  </table>
+
+  <div id="ganttChart" class="gantt"></div>
+
+  <script>
+    // Example input (you can change this)
+    let processes = [
+      { id: "P1", arrival: 0, burst: 5 },
+      { id: "P2", arrival: 1, burst: 3 },
+      { id: "P3", arrival: 2, burst: 8 },
+      { id: "P4", arrival: 3, burst: 6 }
+    ];
+
+    // Sort by Arrival Time
+    processes.sort((a, b) => a.arrival - b.arrival);
+
+    let time = 0;
+    let table = document.getElementById("resultTable");
+    let gantt = document.getElementById("ganttChart");
+
+    processes.forEach(p => {
+      if (time < p.arrival) time = p.arrival;
+      p.start = time;
+      p.completion = time + p.burst;
+      p.turnaround = p.completion - p.arrival;
+      p.waiting = p.start - p.arrival;
+      time = p.completion;
+
+      // Add row in table
+      let row = `<tr>
+        <td>${p.id}</td>
+        <td>${p.arrival}</td>
+        <td>${p.burst}</td>
+        <td>${p.waiting}</td>
+        <td>${p.turnaround}</td>
+        <td>${p.completion}</td>
+      </tr>`;
+      table.innerHTML += row;
+
+      // Add block in Gantt Chart
+      let block = document.createElement("div");
+      block.className = "block";
+      block.style.width = (p.burst * 40) + "px";
+      block.innerHTML = `${p.id}<br>(${p.start} - ${p.completion})`;
+      gantt.appendChild(block);
+    });
+  </script>
+</body>
+</html>
